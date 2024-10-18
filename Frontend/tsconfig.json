@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    // Other options here
+    "forceConsistentCasingInFileNames": true,  // Add this if you haven't already
+    "strict": true,  // Enable strict type checking
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
