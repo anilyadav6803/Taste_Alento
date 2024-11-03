@@ -14,10 +14,10 @@ const AuthProviderWithAuth0: React.FC<Props> = ({ children }) => {
     throw new Error("Missing environment variables");
   }
 
-  const onRedirectCallback = (appState?: AppState, user?: User) => {
-    console.log("User", user);
-    window.history.replaceState({}, document.title, appState?.returnTo || redirectUri);
+  const onRedirectCallback = (appState?: AppState) => {
+    window.history.replaceState({}, document.title, appState?.returnTo || "/"); // Redirect to home if returnTo is undefined
   };
+  
 
   try {
     return (
