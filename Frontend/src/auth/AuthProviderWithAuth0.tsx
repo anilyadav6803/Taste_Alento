@@ -1,24 +1,28 @@
-import { AppState, Auth0Provider } from "@auth0/auth0-react";
+import { Auth0Provider, AppState } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
+import React from "react";
 
-type Props = {
+type AuthProviderWithAuth0Props = {
   children: React.ReactNode;
 };
 
-const AuthProviderWithAuth0 = ({ children }: Props) => {
+const AuthProviderWithAuth0 = ({ children }: AuthProviderWithAuth0Props) => {
   const navigate = useNavigate();
 
+  // Load Auth0 environment variables
   const domain = import.meta.env.VITE_AUTH0_DOMAIN;
   const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
-  const redirectUri = import.meta.env.VITE_AUTH0_CALLBACK_URL;
-  const audience = import.meta.env.VITE_AUTH0_AUDIENCE;
+  const redirectUri = import.meta.env.VITE_REDIRECT_URI || window.location.origin; // Fallback to current origin if undefined
+  const audience = import.meta.env.VITE_AUTH0_AUDIENCE; // Optional
 
-  if (!domain || !clientId || !redirectUri || !audience) {
-    throw new Error("unable to initialise auth");
+  // Ensure required variables are set, otherwise throw an error
+  if (!domain || !clientId) {
+    throw new Error("Missing required Auth0 environment variables.");
   }
 
+  // Redirect callback function
   const onRedirectCallback = (appState?: AppState) => {
-    navigate(appState?.returnTo || "/auth-callback");
+    navigate(appState?.returnTo || "/");
   };
 
   return (
@@ -27,7 +31,7 @@ const AuthProviderWithAuth0 = ({ children }: Props) => {
       clientId={clientId}
       authorizationParams={{
         redirect_uri: redirectUri,
-        audience,
+        audience: audience || undefined, // Include audience only if defined
       }}
       onRedirectCallback={onRedirectCallback}
     >
