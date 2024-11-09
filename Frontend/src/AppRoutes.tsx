@@ -1,7 +1,7 @@
 
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Layout from './layouts/layout'
-import Homepage from './components/Homepage'
+import Homepage from './components/pages/Homepage'
 const AppRoutes = () => {
   return (
     <Routes>
