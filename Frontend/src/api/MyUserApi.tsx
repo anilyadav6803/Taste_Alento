@@ -1,43 +1,51 @@
 import { useMutation } from "react-query";
+import { useAuth0 } from "@auth0/auth0-react";
+
+type CreateUserRequest = {
+  auth0Id: string;
+  email: string;
+};
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-type CreateUserRequest = {
-    auth0Id: string;
-    email: string;
-};
-
 export const useCreateMyUser = () => {
-    // Define the mutation function
-    const createMyUserRequest = async (data: CreateUserRequest) => {
-        const response = await fetch(`${API_BASE_URL}/api/my/user`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        });
+  const { getAccessTokenSilently } = useAuth0();
 
-        if (!response.ok) {
-            throw new Error("Failed to create user");
-        }
+  const createMyUserRequest = async (user: CreateUserRequest) => {
+    try {
+      const accessToken = await getAccessTokenSilently();
+      console.log("AccessToken:", accessToken);  // Debug
+      const response = await fetch(`${API_BASE_URL}/api/my/user`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+      console.log("Response status:", response.status);  // Debug
+  
+      if (!response.ok) {
+        throw new Error("Failed to create user");
+      }
+    } catch (error) {
+      console.error("Error creating user:", error);
+      throw error;
+    }
+  };
+  
 
-        return response.json(); // Return the response JSON if needed
-    };
+  const {
+    mutateAsync: createUser,
+    isLoading,
+    isError,
+    isSuccess,
+  } = useMutation(createMyUserRequest);
 
-    // Use the mutation function with useMutation
-    const {
-        mutateAsync: createUser,
-        isLoading: isUserCreating,
-        isError: userCreateError,
-        isSuccess: userCreateSuccess
-    } = useMutation(createMyUserRequest);
-
-    // Return the necessary properties for use in components
-    return {
-        createUser,
-        isUserCreating,
-        userCreateError,
-        userCreateSuccess
-    };
+  return {
+    createUser,
+    isLoading,
+    isError,
+    isSuccess,
+  };
 };
