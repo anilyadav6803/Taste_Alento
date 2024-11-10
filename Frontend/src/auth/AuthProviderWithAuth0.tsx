@@ -1,40 +1,25 @@
-import { Auth0Provider, AppState, User } from "@auth0/auth0-react";
-import { useNavigate } from "react-router-dom";
-import React from "react";
+import React, { useEffect } from "react";
+import { AppState, Auth0Provider , useAuth0 } from "@auth0/auth0-react";
 import { useCreateMyUser } from "../api/MyUserApi";
+import { useNavigate } from "react-router-dom";
 
-type AuthProviderWithAuth0Props = {
+type Props = {
   children: React.ReactNode;
 };
 
-const AuthProviderWithAuth0 = ({ children }: AuthProviderWithAuth0Props) => {
+const Auth0ProviderWithNavigate = ({ children }: Props) => {
   const navigate = useNavigate();
-
-  // Load Auth0 environment variables
-  const { createUser } = useCreateMyUser();
   const domain = import.meta.env.VITE_AUTH0_DOMAIN;
   const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
-  const redirectUri = import.meta.env.VITE_REDIRECT_URI || window.location.origin; // Fallback to current origin if undefined
-  const audience = import.meta.env.VITE_AUTH0_AUDIENCE; // Optional
+  const redirectUri = import.meta.env.VITE_AUTH0_CALLBACK_URL;
+  const audience = import.meta.env.VITE_AUTH0_AUDIENCE;
 
-  // Ensure required variables are set, otherwise throw an error
-  if (!domain || !clientId) {
-    throw new Error("Missing required Auth0 environment variables.");
+  if (!domain || !clientId || !redirectUri || !audience) {
+    throw new Error("Unable to initialize Auth0. Missing required environment variables.");
   }
 
-  // Redirect callback function
-  const onRedirectCallback = async (appState?: AppState, user?: User) => {
-    // Check if user object has the required properties
-    if (user?.sub && user?.email) {
-      // Call createUser mutation asynchronously
-      await createUser({
-        auth0Id: user.sub,
-        email: user.email,
-      });
-    }
-
-    // Redirect to the target URL after login, if specified
-    navigate(appState?.returnTo || window.location.pathname);
+  const onRedirectCallback = (appState?: AppState) => {
+    navigate(appState?.returnTo || "/");
   };
 
   return (
@@ -43,13 +28,32 @@ const AuthProviderWithAuth0 = ({ children }: AuthProviderWithAuth0Props) => {
       clientId={clientId}
       authorizationParams={{
         redirect_uri: redirectUri,
-        audience: audience || undefined, // Include audience only if defined
+        audience,
       }}
       onRedirectCallback={onRedirectCallback}
     >
-      {children}
+      <AuthUserSync>{children}</AuthUserSync>
     </Auth0Provider>
   );
 };
 
-export default AuthProviderWithAuth0;
+export default Auth0ProviderWithNavigate;
+
+// Sync Auth0 user with backend
+const AuthUserSync: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user } = useAuth0();
+  const { createUser } = useCreateMyUser();
+  const hasCreatedUser = React.useRef(false);
+
+  useEffect(() => {
+    if (user?.sub && user?.email && !hasCreatedUser.current) {
+      createUser({
+        auth0Id: user.sub,
+        email: user.email,
+      });
+      hasCreatedUser.current = true;
+    }
+  }, [createUser, user]);
+
+  return <>{children}</>;
+};
