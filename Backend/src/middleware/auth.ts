@@ -23,18 +23,18 @@ export const jwtParse = async (
   req: Request,
   res: Response,
   next: NextFunction
-): Promise<void> => {
+): Promise<void> => {  // Updated return type
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith("Bearer ")) {
     res.status(401).json({ message: "Authorization token missing or malformed" });
-    return;  // Exit early without returning a Response object
+    return;
   }
 
   const token = authorization.split(" ")[1];
 
   try {
-    const decoded = jwt.decode(token) as jwt.JwtPayload;
+    const decoded = jwt.decode(token) as jwt.JwtPayload | null;
     if (!decoded || !decoded.sub) {
       res.status(401).json({ message: "Invalid token payload" });
       return;
@@ -50,9 +50,10 @@ export const jwtParse = async (
 
     req.auth0Id = auth0Id;
     req.userId = user._id.toString();
-    next();  // Proceed to the next middleware or route handler
+    next();
   } catch (error) {
     console.error("JWT Parsing Error:", error);
     res.status(401).json({ message: "Token decoding failed" });
+    return;
   }
 };
