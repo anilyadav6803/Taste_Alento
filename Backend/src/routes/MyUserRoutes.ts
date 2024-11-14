@@ -1,13 +1,23 @@
-import express from "express";
+import express, { RequestHandler } from "express";
 import MyUserController from "../controllers/MyUserController";
-import { jwtCheck, jwtParse } from "../middleware/auth"; // Ensure jwtCheck and jwtParse are properly implemented
+import { jwtCheck, jwtParse } from "../middleware/auth";
+import { validateMyUserRequest } from "../middleware/validation";
 
 const router = express.Router();
 
-// Define the POST route to create a new user with jwtCheck for authentication
-router.post("/", jwtCheck, MyUserController.createCurrentUser);
+// Convert each item in validateMyUserRequest to RequestHandler
+const validationMiddlewares: RequestHandler[] = validateMyUserRequest as RequestHandler[];
 
-// Define the PUT route to update an existing user with jwtParse to parse user ID
-router.put("/", jwtParse, jwtCheck, MyUserController.updateCurrentUser);
+// Define the POST route to create a new user with jwtCheck for authentication
+router.post("/", jwtCheck as RequestHandler, MyUserController.createCurrentUser);
+
+// Define the PUT route with middleware functions explicitly typed
+router.put(
+  "/",
+  jwtCheck as RequestHandler,
+  jwtParse as RequestHandler,
+  ...validationMiddlewares, // Spread the typed validation middlewares
+  MyUserController.updateCurrentUser as RequestHandler
+);
 
 export default router;
