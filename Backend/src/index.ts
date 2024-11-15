@@ -3,9 +3,8 @@ import cors from "cors";
 import express, { Request, Response } from "express";
 import "dotenv/config";
 import mongoose from "mongoose";
-
-
 import MyUserRoute from "./routes/MyUserRoutes";
+import { auth } from "express-oauth2-jwt-bearer";
 
 
 mongoose
@@ -17,6 +16,13 @@ mongoose
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+
+
+
+
+// enforce on all endpoints
+
 
 
 app.use("/api/my/user" , MyUserRoute);
