@@ -9,15 +9,16 @@ const router = express.Router();
 const validationMiddlewares: RequestHandler[] = validateMyUserRequest as RequestHandler[];
 
 // Define the POST route to create a new user with jwtCheck for authentication
-router.post("/", jwtCheck as RequestHandler, MyUserController.createCurrentUser);
-
-// Define the PUT route with middleware functions explicitly typed
 router.put(
   "/",
-  jwtCheck as RequestHandler,
-  jwtParse as RequestHandler,
-  ...validationMiddlewares, // Spread the typed validation middlewares
-  MyUserController.updateCurrentUser as RequestHandler
+  (req, res, next) => {
+    console.log("Incoming Headers:", req.headers); // Debug headers
+    next();
+  },
+  jwtCheck,
+  jwtParse,
+  MyUserController.updateCurrentUser
 );
+
 
 export default router;
