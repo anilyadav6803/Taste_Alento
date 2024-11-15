@@ -38,6 +38,8 @@ const updateCurrentUser: RequestHandler = async (req: Request, res: Response): P
 
     const updatedUser = await user.save();
     res.status(200).json(updatedUser);
+    console.log("Authenticated User ID:", req.userId); // Check extracted userId
+    console.log("Request Body:", req.body); // Check received data
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error updating user" });
