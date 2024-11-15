@@ -5,21 +5,17 @@ import Footer from '@/components/Footer'
 type Props = {
   children: React.ReactNode;
   showHero?: boolean;
+};
 
-}
-
-function Layout({ children , showHero = false }: Props) {
+const Layout = ({ children, showHero = false }: Props) => {
   return (
-    <div className='flex flex-col min-h-screen'>
-      <Header/>
-      {showHero && <Hero/>}
-      
-     
-      <div className='container mx-auto flex-1 py-10'>{children}</div><div className='h-20'></div>
-
-      <Footer/>
+    <div className="flex flex-col min-h-screen">
+      <Header />
+      {showHero && <Hero />}
+      <div className="container mx-auto flex-1 py-10">{children}</div>
+      <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;
