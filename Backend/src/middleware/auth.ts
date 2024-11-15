@@ -2,12 +2,13 @@ import { auth } from "express-oauth2-jwt-bearer";
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import User from "../models/user";
-
+// Add more logging here to see if the algorithm or other details might be wrong
 export const jwtCheck = auth({
   audience: process.env.AUTH0_AUDIENCE,
   issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
-  tokenSigningAlg: "RS256",
+  tokenSigningAlg: "RS256", // Ensure this matches the token's signing algorithm
 });
+
 
 // Extend the Express Request interface to include auth0Id and userId
 declare global {
@@ -19,41 +20,32 @@ declare global {
   }
 }
 
-export const jwtParse = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {  // Updated return type
+export const jwtParse = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith("Bearer ")) {
+    console.error("Authorization header missing or malformed:", req.headers);
     res.status(401).json({ message: "Authorization token missing or malformed" });
     return;
   }
 
   const token = authorization.split(" ")[1];
+  console.log("Extracted Token:", token); // Log the token
 
   try {
     const decoded = jwt.decode(token) as jwt.JwtPayload | null;
+    console.log("Decoded Token:", decoded); // Log decoded payload
+
     if (!decoded || !decoded.sub) {
+      console.error("Invalid token payload:", decoded);
       res.status(401).json({ message: "Invalid token payload" });
       return;
     }
 
-    const auth0Id = decoded.sub;
-    const user = await User.findOne({ auth0Id });
-
-    if (!user) {
-      res.status(401).json({ message: "User not found" });
-      return;
-    }
-
-    req.auth0Id = auth0Id;
-    req.userId = user._id.toString();
+    // Continue processing...
     next();
   } catch (error) {
     console.error("JWT Parsing Error:", error);
     res.status(401).json({ message: "Token decoding failed" });
-    return;
   }
 };
