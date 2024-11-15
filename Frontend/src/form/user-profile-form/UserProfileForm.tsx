@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/UI/input";
 import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/UI/button";
-import { User } from "@prisma/client";
+import { User } from "@/types";
 import { useEffect } from "react";
 
 const formSchema = z.object({
@@ -51,10 +51,10 @@ const UserProfileForm = ({
   }, [currentUser, form]);
 
   return (
-    <Form {...form}>
+    <Form {...form }  >
       <form
         onSubmit={form.handleSubmit(onSave)}
-        className="space-y-4 bg-gray-50 rounded-lg md:p-10"
+        className="space-y-4 bg-gray-50 rounded-lg md:p-10 p-10 "
       >
         <div>
           <h2 className="text-2xl font-bold">{title}</h2>
