@@ -9,7 +9,7 @@ const router = express.Router();
 const validationMiddlewares: RequestHandler[] = validateMyUserRequest as RequestHandler[];
 
 // Define the POST route to create a new user with jwtCheck for authentication
-router.put(
+router.post(
   "/",
   (req, res, next) => {
     console.log("Incoming Headers:", req.headers); // Debug headers
@@ -17,6 +17,7 @@ router.put(
   },
   jwtCheck,
   jwtParse,
+  ...validationMiddlewares,
   MyUserController.updateCurrentUser
 );
 
