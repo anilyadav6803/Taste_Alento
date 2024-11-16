@@ -23,14 +23,21 @@ const createCurrentUser: RequestHandler = async (req: Request, res: Response, ne
 const updateCurrentUser: RequestHandler = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, addressLine1, country, city } = req.body;
-    const userId = req.body.userId;  // Ensure userId is correctly set
-    const user = await User.findById(req.userId);
+    const userId = req.userId; // Ensure userId is correctly extracted from jwtParse
+
+    if (!userId) {
+      res.status(400).json({ message: "User ID is missing" });
+      return;
+    }
+
+    const user = await User.findOne({ auth0Id: userId });
 
     if (!user) {
       res.status(404).json({ message: "User not found" });
       return;
     }
 
+    // Update user details
     user.name = name || user.name;
     user.addressLine1 = addressLine1 || user.addressLine1;
     user.city = city || user.city;
@@ -38,13 +45,12 @@ const updateCurrentUser: RequestHandler = async (req: Request, res: Response): P
 
     const updatedUser = await user.save();
     res.status(200).json(updatedUser);
-    console.log("Authenticated User ID:", req.userId); // Check extracted userId
-    console.log("Request Body:", req.body); // Check received data
   } catch (error) {
-    console.error(error);
+    console.error("Error updating user:", error);
     res.status(500).json({ message: "Error updating user" });
   }
 };
+
 
 export default {
   createCurrentUser,
