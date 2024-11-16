@@ -4,7 +4,6 @@ import express, { Request, Response } from "express";
 import "dotenv/config";
 import mongoose from "mongoose";
 import MyUserRoute from "./routes/MyUserRoutes";
-import { auth } from "express-oauth2-jwt-bearer";
 
 
 mongoose
