@@ -30,11 +30,11 @@ export const jwtParse = async (req: Request, res: Response, next: NextFunction):
   }
 
   const token = authorization.split(" ")[1];
-  console.log("Extracted Token:", token); // Log the token
+  console.log("Extracted Token:", token); // Debug: Log token
 
   try {
     const decoded = jwt.decode(token) as jwt.JwtPayload | null;
-    console.log("Decoded Token:", decoded); // Log decoded payload
+    console.log("Decoded Token:", decoded); // Debug: Log decoded payload
 
     if (!decoded || !decoded.sub) {
       console.error("Invalid token payload:", decoded);
@@ -42,7 +42,9 @@ export const jwtParse = async (req: Request, res: Response, next: NextFunction):
       return;
     }
 
-    // Continue processing...
+    // Attach auth0Id and userId to req for further use
+    req.auth0Id = decoded.sub;
+    req.userId = decoded.sub; // Replace if you map `sub` to a userId in DB
     next();
   } catch (error) {
     console.error("JWT Parsing Error:", error);
