@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/UI/input";
 import LoadingButton from "@/components/LoadingButton";
 import { Button } from "@/components/UI/button";
-import { User } from "@/types";
+import { User } from "@auth0/auth0-react";
 import { useEffect } from "react";
 
 const formSchema = z.object({
@@ -41,15 +41,25 @@ const UserProfileForm = ({
   title = "User Profile",
   buttonText = "Submit",
 }: Props) => {
+  const defaultUser = {
+    email: currentUser?.email || "",
+    name: currentUser?.name || "",
+    addressLine1: currentUser?.addressLine1 || "",
+    city: currentUser?.city || "",
+    country: currentUser?.country || "",
+  };
+
   const form = useForm<UserFormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: currentUser,
+    defaultValues: defaultUser,
   });
 
   useEffect(() => {
-    form.reset(currentUser);
+    if (currentUser) {
+      form.reset(defaultUser);
+    }
   }, [currentUser, form]);
-
+  
   return (
     <Form {...form }  >
       <form
