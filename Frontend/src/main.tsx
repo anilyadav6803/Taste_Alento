@@ -24,6 +24,11 @@ createRoot(document.getElementById("root")!).render(
     clientId="TycumvVaZDDKWuHlmOLaPEFlkQUgOsaj"
     authorizationParams={{
       redirect_uri: window.location.origin,
+      scope: "25ioan016@rkgit.edu.in",
+      audience: "https://webcodes.us.auth0.com/api/v2/",
+      response_type: "code",
+      grant_type: "authorization_code",
+     
     }}
   >
     <AppRoutes />
