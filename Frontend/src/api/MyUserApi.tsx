@@ -60,7 +60,7 @@ export const useGetMyUser = () => {
     return response.json();
   };
 
-  const { data: currentUser, isLoading, error } = useQuery(
+  const { data: currentUser, isLoading, error , } = useQuery(
     "fetchCurrentUser",
     getMyUserRequest
   );
