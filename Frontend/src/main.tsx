@@ -8,6 +8,7 @@ import { QueryClient } from "react-query";
 import { QueryClientProvider } from "react-query";
 
 import { Auth0Provider } from "@auth0/auth0-react";
+import { Toaster } from "sonner";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -32,6 +33,7 @@ createRoot(document.getElementById("root")!).render(
     }}
   >
     <AppRoutes />
+    < Toaster visibleToasts={1} position="top-right" richColors/>
   </Auth0Provider>
   </QueryClientProvider>
   </Router>
