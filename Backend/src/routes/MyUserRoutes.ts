@@ -7,7 +7,7 @@ const router = express.Router();
 
 // Convert each item in validateMyUserRequest to RequestHandler
 const validationMiddlewares: RequestHandler[] = validateMyUserRequest as RequestHandler[];
-
+const.get("/" , jwtCheck, jwtCheck MyUserController.getMyUser);
 // Define the POST route to create a new user with jwtCheck for authentication
 router.post(
   "/",
