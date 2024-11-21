@@ -1,23 +1,15 @@
 import UserProfileForm, { UserFormData } from "@/form/user-profile-form/UserProfileForm";
-import { useCreateMyUser } from "@/api/MyUserApi";
+import { useCreateMyUser, useGetMyUser } from "@/api/MyUserApi";
 import { toast } from "sonner";
 
-// Mock current user data or fetch it dynamically
-const currentUser = {
-  name: "",
-  addressLine1: "",
-  city: "",
-  country: "",
-  email: "",
-};
-
 export default function UserProfile() {
-  const { createUser, isLoading } = useCreateMyUser();
+  const { createUser, isLoading: isCreateUserLoading } = useCreateMyUser();
+  const { currentUser, isLoading: isGetUserLoading } = useGetMyUser();
 
   const handleSave = async (userProfileData: UserFormData) => {
     const apiRequest = {
       auth0Id: "mock-auth0-id", // Replace with dynamic value if available
-      email: currentUser.email || "mock-email@example.com", // Replace with the current user's email
+      email: currentUser?.email || "mock-email@example.com", // Fallback to mock email
       name: userProfileData.name,
       addressLine1: userProfileData.addressLine1,
       city: userProfileData.city,
@@ -36,10 +28,10 @@ export default function UserProfile() {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">User Profile</h1>
-      {/* Pass handleSave, isLoading, and currentUser as props */}
+      {/* Pass handleSave, loading states, and currentUser as props */}
       <UserProfileForm
         onSave={handleSave}
-        isLoading={isLoading}
+        isLoading={isCreateUserLoading || isGetUserLoading}
         currentUser={currentUser}
         title="Edit Profile"
         buttonText="Save Changes"
