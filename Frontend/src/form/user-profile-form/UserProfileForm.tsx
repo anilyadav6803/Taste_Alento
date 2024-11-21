@@ -27,7 +27,7 @@ const formSchema = z.object({
 export type UserFormData = z.infer<typeof formSchema>;
 
 type Props = {
-  currentUser: User;
+  currentUser?: User; // Allow undefined
   onSave: (userProfileData: UserFormData) => void;
   isLoading: boolean;
   title?: string;
@@ -58,8 +58,8 @@ const UserProfileForm = ({
     if (currentUser) {
       form.reset(defaultUser);
     }
-  }, [currentUser, form]);
-  
+  }, [currentUser, form, defaultUser]);
+
   return (
     <Form {...form }  >
       <form
