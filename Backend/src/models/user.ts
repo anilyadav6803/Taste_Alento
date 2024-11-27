@@ -1,33 +1,37 @@
-import { count } from "console";
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-   _id : ObjectId,
-   auth0Id : {
-      type : String,
-      required : true
+   _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      auto: true, // Automatically generates an ObjectId
    },
-   email : {
-      type : String,
-      required : true
+   auth0Id: {
+      type: String,
+      required: true, // Assuming it's required for your application
    },
-   name : {     
-      type : String,        
-      
+   email: {
+      type: String,
+      required: true,
+   },
+   name: {     
+      type: String,        
+      required: false, // Explicitly marking as optional
    },
    addressLine1: {
       type: String,
-
+      required: false,
    },
-   city : {
-      type: String,     
-
-   },
-   country : {
+   city: {
       type: String,
-
-   }
+      required: false,
+   },
+   country: {
+      type: String,
+      required: false,
+   },
 });
+
+// Create and export the model
 const User = mongoose.model("User", userSchema);
 
 export default User;
