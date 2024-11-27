@@ -6,6 +6,23 @@ export default function UserProfile() {
   const { createUser, isLoading: isCreateUserLoading } = useCreateMyUser();
   const { currentUser, isLoading: isGetUserLoading } = useGetMyUser();
 
+
+  if(isGetUserLoading) {
+    return (
+      <span>Loading...</span>
+    )
+  }
+
+
+  if (!currentUser) {
+    return (
+      <div>
+        <h1 className="text-2xl font-bold mb-4">User Profile</h1>
+        <p>No user data available.</p>
+      </div>
+    );
+  }
+
   const handleSave = async (userProfileData: UserFormData) => {
     const apiRequest = {
       auth0Id: "mock-auth0-id", // Replace with dynamic value if available
