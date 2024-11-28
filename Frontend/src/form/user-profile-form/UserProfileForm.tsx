@@ -41,6 +41,7 @@ const UserProfileForm = ({
   title = "User Profile",
   buttonText = "Submit",
 }: Props) => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const defaultUser = {
     email: currentUser?.email || "",
     name: currentUser?.name || "",
