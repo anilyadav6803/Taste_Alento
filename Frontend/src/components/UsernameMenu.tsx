@@ -7,27 +7,31 @@ import {
   DropdownMenuTrigger,
 } from "./UI/dropdown-menu";
 import { Button } from "./UI/button";
-import { Link } from "react-router-dom"; // Import Link from react-router-dom
-import { useAuth0 } from "@auth0/auth0-react"; // Import useAuth0 from Auth0
+import { Link } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function UsernameMenu() {
-  const { user, logout } = useAuth0(); // Correctly destructuring user from useAuth0
+  const { user, logout } = useAuth0();
+
+  if (!user) {
+    console.error("User object is undefined.");
+    return null;
+  }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="text-orange-500 hover:text-orange-400 flex items-center px-3 font-bold gap-2">
         <CircleUserRound className="text-orange-500" />
-        {user?.email} {/* Display user's email */}
+        {user.email}
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="">
+      <DropdownMenuContent>
         <DropdownMenuItem className="my-2">
           <Link to="/user-profile" className="hover:text-orange-500 font-bold">
             User Profile
           </Link>
         </DropdownMenuItem>
         <Separator className="bg-gray-200 h-[1.5px]" />
-
-        <DropdownMenuItem className="my-2 ">
+        <DropdownMenuItem className="my-2">
           <Button
             onClick={() =>
               logout({ logoutParams: { returnTo: window.location.origin } })
