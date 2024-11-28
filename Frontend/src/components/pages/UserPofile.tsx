@@ -7,21 +7,8 @@ export default function UserProfile() {
   const { currentUser, isLoading: isGetUserLoading } = useGetMyUser();
 
 
-  if(isGetUserLoading) {
-    return (
-      <span>Loading...</span>
-    )
-  }
 
 
-  if (!currentUser) {
-    return (
-      <div>
-        <h1 className="text-2xl font-bold mb-4">User Profile</h1>
-        <p>No user data available.</p>
-      </div>
-    );
-  }
 
   const handleSave = async (userProfileData: UserFormData) => {
     const apiRequest = {
