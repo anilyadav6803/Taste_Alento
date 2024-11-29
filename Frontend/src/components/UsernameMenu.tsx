@@ -10,33 +10,37 @@ import { Button } from "./UI/button";
 import { Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 
-export default function UsernameMenu() {
+const UsernameMenu = () => {
   const { user, logout } = useAuth0();
 
-  if (!user) {
-    console.error("User object is undefined.");
-    return null;
-  }
+  console.log("User Object:", user); // Debugging
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="text-orange-500 hover:text-orange-400 flex items-center px-3 font-bold gap-2">
+      <DropdownMenuTrigger className="flex items-center px-3 font-bold hover:text-orange-500 gap-2">
         <CircleUserRound className="text-orange-500" />
-        {user.email}
+        {/* Render user email only if it exists */}
+        {user?.email || "Guest"}
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem className="my-2">
-          <Link to="/user-profile" className="hover:text-orange-500 font-bold">
+        <DropdownMenuItem>
+          <Link
+            to="/manage-restaurant"
+            className="font-bold hover:text-orange-500"
+          >
+            Manage Restaurant
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link to="/user-profile" className="font-bold hover:text-orange-500">
             User Profile
           </Link>
         </DropdownMenuItem>
-        <Separator className="bg-gray-200 h-[1.5px]" />
-        <DropdownMenuItem className="my-2">
+        <Separator />
+        <DropdownMenuItem>
           <Button
-            onClick={() =>
-              logout({ logoutParams: { returnTo: window.location.origin } })
-            }
-            className="text-orange-500 hover:text-orange-400 font-bold flex flex-1"
+            onClick={() => logout()}
+            className="flex flex-1 font-bold bg-orange-500"
           >
             Log Out
           </Button>
@@ -44,4 +48,6 @@ export default function UsernameMenu() {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+};
+
+export default UsernameMenu;
