@@ -3,6 +3,7 @@ import Layout from "./layouts/layout";
 import Homepage from "./components/pages/Homepage";
 import AuthCallbackPage from "./components/pages/AuthCallback";
 import UserProfile from "./components/pages/UserPofile";
+import ProtectedRoute from "./auth/ProtectedRoute";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -28,6 +29,7 @@ const AppRoutes = () => {
         }
       />
 
+      <Route element={<ProtectedRoute/>} >
       <Route
         path="/user-profile"
         element={
@@ -36,6 +38,9 @@ const AppRoutes = () => {
           </Layout>
         }
       />
+      </Route>
+
+     
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
