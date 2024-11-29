@@ -16,13 +16,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-
-
-
-
-// enforce on all endpoints
-
-
+app.get("/health", (req: Request, res: Response) => {
+  res.send({message : "Health okk :)"});
+})
 
 app.use("/api/my/user" , MyUserRoute);
 
